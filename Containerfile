@@ -48,6 +48,15 @@ RUN usermod -p '$6$AJv9RHlhEXO6Gpul$5fvVTZXeM0vC03xckTIjY8rdCofnkKSzvF5vEzXDKAby
 
 # If you want a desktop :)
 # RUN zypper install -y -t pattern kde && zypper install -y konsole sddm-qt6 vim dolphin just
+# Copy Homebrew files from the brew image
+# And enable
+COPY --from=ghcr.io/ublue-os/brew:latest /system_files /
+RUN --mount=type=cache,dst=/var/cache \
+    --mount=type=cache,dst=/var/log \
+    --mount=type=tmpfs,dst=/tmp \
+    /usr/bin/systemctl preset brew-setup.service && \
+    /usr/bin/systemctl preset brew-update.timer && \
+    /usr/bin/systemctl preset brew-upgrade.timer
 
 # Necessary labels
 LABEL containers.bootc 1
